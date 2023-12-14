@@ -1,0 +1,173 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <title>Team Curve</title>
+
+    <meta charset="UTF-8">
+
+   
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        canvas {
+            max-width: 600px;
+            margin: 20px auto;
+            display: block;
+        }
+    </style>
+    
+</head>
+<body>
+    <div>
+        <form id="graphForm">
+            {% csrf_token %}
+            <label for="equation">Choose an Equation:</label>
+            <select id="equation" name="equation">
+                <option value="1">y = a*x^b</option>
+                <option value="2">y = a*(e^bx)</option>
+                <option value="3">y = a + bx + cx^2</option>
+                <option value="4">y = a + bx</option>
+                <!-- Add more equations here -->
+            </select>
+
+            <label for="xValues">Enter X Values (comma-separated):</label>
+            <input type="text" id="xValues" name="xValues">
+
+            <label for="yValues">Enter Y Values (comma-separated):</label>
+            <input type="text" id="yValues" name="yValues">
+
+            <button type="button" onclick="generateGraph()">Generate Graph</button>
+        </form>
+    </div>
+    <canvas id="myChart"></canvas>
+
+    <script>
+        let myChart = null; // To store the chart instance
+    
+        function generateGraph() {
+            const form = document.getElementById('graphForm');
+            const formData = new FormData(form);
+    
+            fetch('/calculation/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Clear previous chart if it exists
+                if (myChart) {
+                    myChart.destroy();
+                }
+    
+                const ctx = document.getElementById('myChart').getContext('2d');
+                myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.xValues,
+                        datasets: [{
+                            label: data.Label,
+                            data: data.yValues,
+                            backgroundColor: 'black',
+                            borderColor: 'red',
+                            pointBackgroundColor: 'orange',
+                            borderWidth: 1.8,
+                            
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: 'black' // Legend color
+                                }
+                            }
+                        }
+    
+                    }
+                });
+            });
+        }
+    </script>
+    
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
